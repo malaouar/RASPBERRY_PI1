@@ -4,7 +4,7 @@ How the RPI boots:
 2. Stage2 bootcode.bin. Enables SDRAM and loads stage3
 3. Stage3 loader.bin. Knows about elf format and load start.elf
 4. start.elf loads kernel.img.
-	It reads config.txt, cmdline.txt and loads kernel.img @ 0×8000
+	It reads config.txt, cmdline.txt and loads kernel.img @ 0Ã—8000
 5. kernel.img, is the *first* thing that runs on the ARM processor
 
 
@@ -30,11 +30,29 @@ Instead of the SD dance, using a bootloader makes life a bit simpler and greatly
 2) power on rpi
 3) type command to load and start your test program
 
-Get some sort of serial solution (usb to COM) to connect a termial program ( hyperterm) to the uart on the raspberry pi. 
+Get some sort of serial solution (usb to COM) to connect a termial program ( hyperterm on WIN, minicom or cutecom on Linux) to the uart on the raspberry pi. 
 
 How to load programs in RAM using bootloader (from dwelch67 or the one included here):
 1- copy the bootloader binary file (dwelch67 V3 tested OK) into the SD Card (rename the original kernel.img first).
-2- Launch hyperterm.exe,  start a new serial connection: 115200 8N1 no handshake.
+2- On WIN Launch hyperterm.exe,  start a new serial connection: 115200 8N1 no handshake.
 3- Power the raspberry: you get 012345678
-4- From the menu you can choose  "send file" using XMODEM protocol, then choose your ".bin" file to load  (assumed to be built based on address 0x8000 and less than 0x200000-0x8000 bytes in size.)
+4- From the menu "Transfer"  choose  "Send File".  In protocol box choose XMODEM , then browse for your ".bin" file to load  (assumed to be built based on address 0x8000 and less than 0x200000-0x8000 bytes in size). Last, hit "Send" button.
 
+On Linux:
+1- copy the bootloader binary file into the SD Card.
+2- install cutecom (simpler than minicom  and has a GUI).
+ sudo apt-get update
+ sudo apt-get install cutecom
+3- install the  lrzsz package
+  sudo apt-get install lrzsz
+4- create a shortcut to cutecom on the desktop.
+To be able to use ttyUSB0 without root previlege:
+	sudo usermod -a -G dialout $USER
+Next reboot the system:
+	sudo reboot
+Launch cutecom from shortcut or a terminal.
+5- The USB-COM adaptor will beautomatically detected (if it's plugged).
+  Configure it: 115200 8N1 no handshake ( default)
+6- Open the port
+7- Power raspberry: you get  012345678 
+8- At bottom left: choose XMODEM protocol then "send file", browse for your ".bin" file to load.
