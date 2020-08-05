@@ -1,0 +1,40 @@
+ 
+How the RPI boots:
+1. Stage1 boot in the on-chip ROM. Loads stage2 in the L2 cache!
+2. Stage2 bootcode.bin. Enables SDRAM and loads stage3
+3. Stage3 loader.bin. Knows about elf format and load start.elf
+4. start.elf loads kernel.img.
+	It reads config.txt, cmdline.txt and loads kernel.img @ 0×8000
+5. kernel.img, is the *first* thing that runs on the ARM processor
+
+
+To test a program, first get a Raspberry PI SD card which has an operating system installed. Rename kernel.img to something else (kernel_linux.img). Then, copy your file kernel.img onto the SD Card. To switch back, simply delete your kernel.img file, and rename the other one back to kernel.img.
+
+1) power off rpi
+2) remove sd card
+3) insert sd card in reader
+4) plug reader into computer
+5) mount/wait
+6) copy binary file to kernel.img
+7) sync/wait
+8) unmount
+9) insert sd card in rpi
+10) power rpi
+11) repeat
+
+Instead of the SD dance, using a bootloader makes life a bit simpler and greatly reduces physical wear and tear on the SD card socket.Compile the program and copy the resulted kernel.img to the sd card.
+
+  The processor boots the bootloader program which allows you to load programs into memory and then it jumps to your program.  If your program is still being debugged and you want to try again, you reboot the processor the bootloader comes up and you can try again without having to move any SD cards.  The sd card dance above is now replaced with the bootloader dance:
+
+1) power off rpi
+2) power on rpi
+3) type command to load and start your test program
+
+Get some sort of serial solution (usb to COM) to connect a termial program ( hyperterm) to the uart on the raspberry pi. 
+
+How to load programs in RAM using bootloader (from dwelch67 or the one included here):
+1- copy the bootloader binary file (dwelch67 V3 tested OK) into the SD Card (rename the original kernel.img first).
+2- Launch hyperterm.exe,  start a new serial connection: 115200 8N1 no handshake.
+3- Power the raspberry: you get 012345678
+4- From the menu you can choose  "send file" using XMODEM protocol, then choose your ".bin" file to load  (assumed to be built based on address 0x8000 and less than 0x200000-0x8000 bytes in size.)
+
